@@ -1,0 +1,78 @@
+* From GWAS catalog and PubMed queries to XML for input into Covance screen <2020-09-11>
+
+#+begin_src R
+  library(tidyverse)
+  library(magrittr)
+  library(lubridate)
+  library(easyPubMed)
+
+  PREFIX = "2020-09-11.gwas_catalog.EFO_0000249"
+
+  t = gwasrapidd::get_traits(efo_id = "EFO_0000249")
+
+  t
+
+  save(t, file=str_interp("${PREFIX}.traits.RData"))
+
+  ###
+
+  s = gwasrapidd::get_studies(efo_id = t@traits$efo_id)
+
+  s
+
+  save(s, file=str_interp("${PREFIX}.studies.RData"))
+
+  ###
+
+  p = s@publications
+
+  p
+
+  p %<>% filter(publication_date >= as_date("2015-01-01"))
+
+  p
+
+  p %>% nrow
+
+  p %>% distinct(pubmed_id) %>% nrow
+
+  p %>% write_csv(str_interp("${PREFIX}.studies.publications.since_2015.csv"))
+
+  ###
+
+  a = gwasrapidd::get_associations(study_id = s@studies$study_id)
+
+  a
+
+  save(a, file=str_interp("${PREFIX}.associations.RData"))
+
+  ###
+
+  v = gwasrapidd::get_variants(study_id = s@studies$study_id)
+
+  v
+
+  save(v, file=str_interp("${PREFIX}.variants.RData"))
+
+  ###
+
+  pubmed_ids = p$pubmed_id %>% unique
+
+  pubmed_ids
+
+  pubmed_qry = str_c(str_c(pubmed_ids, " [PMID]"), collapse = " OR ")
+
+  pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
+
+  pubmed_xml %>% write(str_interp("${PREFIX}.studies.publications.since_2015.pubmed.xml"))
+
+  ###
+
+  pubmed_qry = "\"Alzheimer's Disease Sequencing Project\" [CN]"
+
+  as.character(get_pubmed_ids(pubmed_qry)$IdList) %notin% pubmed_ids # none of the ADSP papers is included in the GWAS Catalog!
+
+  pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
+
+  pubmed_xml %>% write(str_interp("2020-09-11.ADSP_CN.pubmed.xml"))
+#+end_src
