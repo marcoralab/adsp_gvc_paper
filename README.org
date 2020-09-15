@@ -6,13 +6,13 @@
   library(lubridate)
   library(easyPubMed)
 
-  PREFIX = "2020-09-11.gwas_catalog.EFO_0000249"
+  OUTPUT="output/2020-09-11"
 
   t = gwasrapidd::get_traits(efo_id = "EFO_0000249")
 
   t
 
-  save(t, file=str_interp("${PREFIX}.traits.RData"))
+  save(t, file=str_interp("${OUTPUT}/gwas_catalog.EFO_0000249.traits.RData"))
 
   ###
 
@@ -20,7 +20,7 @@
 
   s
 
-  save(s, file=str_interp("${PREFIX}.studies.RData"))
+  save(s, file=str_interp("${OUTPUT}/gwas_catalog.EFO_0000249.studies.RData"))
 
   ###
 
@@ -36,7 +36,7 @@
 
   p %>% distinct(pubmed_id) %>% nrow
 
-  p %>% write_csv(str_interp("${PREFIX}.studies.publications.since_2015.csv"))
+  p %>% write_csv(str_interp("${OUTPUT}/gwas_catalog.EFO_0000249.studies.publications.since_2015.csv"))
 
   ###
 
@@ -44,7 +44,7 @@
 
   a
 
-  save(a, file=str_interp("${PREFIX}.associations.RData"))
+  save(a, file=str_interp("${OUTPUT}/gwas_catalog.EFO_0000249.associations.RData"))
 
   ###
 
@@ -52,7 +52,7 @@
 
   v
 
-  save(v, file=str_interp("${PREFIX}.variants.RData"))
+  save(v, file=str_interp("${OUTPUT}/gwas_catalog.EFO_0000249.variants.RData"))
 
   ###
 
@@ -64,7 +64,7 @@
 
   pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
 
-  pubmed_xml %>% write(str_interp("${PREFIX}.studies.publications.since_2015.pubmed.xml"))
+  pubmed_xml %>% write(str_interp("${OUTPUT}/gwas_catalog.EFO_0000249.studies.publications.since_2015.xml"))
 
   ###
 
@@ -74,5 +74,5 @@
 
   pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
 
-  pubmed_xml %>% write(str_interp("2020-09-11.ADSP_CN.pubmed.xml"))
+  pubmed_xml %>% write(str_interp("${OUTPUT}/pubmed.ADSP_CN.publications.xml"))
 #+end_src
