@@ -1,6 +1,6 @@
 # Inclusion criteria 
 ## From ConsensusToEvaluateV2.doc
-* The phenotype must be Alzheimer's disease (AD) affectation status, family history of AD, or "dementia", but not specific non-AD dementias.
+* The phenotype must be Alzheimer's disease (AD) affectation status, family history of AD, or "dementia", but not specific non-AD dementias or endophenotypes.
 * The study must be a genome scan, either single variant or aggregation tests.
 * The study must not be a review paper.
 * The study must be published since 2015-01-01.
@@ -8,3 +8,4 @@
 ## From GVC calls since then
 * The analysis must not be performed with a novel method.
 * The analysis must include at least 1000 subjects.
+* The analysis must not be stratified, (ex., by sex or APOE status).
