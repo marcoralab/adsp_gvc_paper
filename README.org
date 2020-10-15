@@ -76,3 +76,80 @@
 
   pubmed_xml %>% write(str_interp("${OUTPUT}/pubmed.ADSP_CN.publications.xml"))
 #+end_src
+
+* From GWAS catalog and PubMed queries to XML for input into Covance screen <2020-09-24>
+
+#+begin_src R
+  library(tidyverse)
+  library(magrittr)
+  library(lubridate)
+  library(easyPubMed)
+
+  OUTPUT="output/2020-09-24"
+
+  t = gwasrapidd::get_traits(efo_id = "EFO_1001870")
+
+  save(t, file=str_interp("${OUTPUT}/gwas_catalog.EFO_1001870.traits.RData"))
+
+  ###
+
+  s = gwasrapidd::get_studies(efo_id = t@traits$efo_id)
+
+  s
+
+  save(s, file=str_interp("${OUTPUT}/gwas_catalog.EFO_1001870.studies.RData"))
+
+  ###
+
+  p = s@publications
+
+  p
+
+  p %<>% filter(publication_date >= as_date("2015-01-01"))
+
+  p
+
+  p %>% nrow
+
+  p %>% distinct(pubmed_id) %>% nrow
+
+  p %>% write_csv(str_interp("${OUTPUT}/gwas_catalog.EFO_1001870.studies.publications.since_2015.csv"))
+
+  ###
+
+  a = gwasrapidd::get_associations(study_id = s@studies$study_id)
+
+  a
+
+  save(a, file=str_interp("${OUTPUT}/gwas_catalog.EFO_1001870.associations.RData"))
+
+  ###
+
+  v = gwasrapidd::get_variants(study_id = s@studies$study_id)
+
+  v
+
+  save(v, file=str_interp("${OUTPUT}/gwas_catalog.EFO_1001870.variants.RData"))
+
+  ###
+
+  pubmed_ids = p$pubmed_id %>% unique
+
+  pubmed_ids
+
+  pubmed_qry = str_c(str_c(pubmed_ids, " [PMID]"), collapse = " OR ")
+
+  pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
+
+  pubmed_xml %>% write(str_interp("${OUTPUT}/gwas_catalog.EFO_1001870.studies.publications.since_2015.xml"))
+
+  ###
+
+  pubmed_qry = '("Alzheimer disease" OR "Alzheimer\'s disease") AND (whole-exome OR whole-genome) AND (genome-wide-association-study OR GWAS) NOT Review[PT] AND English[LA] AND 2010/01/01[EDAT]:2020/09/24[EDAT]'
+
+  as.character(get_pubmed_ids(pubmed_qry)$IdList) %notin% pubmed_ids
+
+  pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
+
+  pubmed_xml %>% write(str_interp("${OUTPUT}/pubmed.AD_WEGS_GWAS.publications.xml"))
+#+end_src
