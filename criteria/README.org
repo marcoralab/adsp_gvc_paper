@@ -30,21 +30,10 @@
 
 ** Single variant, locus association analysis
 
-*** Tier 1
-
-**** Quality of analysis
-
-- Are counfounding factors accounted for? For example, population structure, age, sex, race and ethnicity? *Yes*, No, Unable to eval
-
-**** Strength of association
-
-- pval of association < (0.05/# of tests)
-
-**** Robustness of association
-
-*** Tier 2
-
-- pval of association < (1/# of tests)
+- Is analysis appropriate?
+- Is association significant?
+- Is association robust?
+- Is association consistent?
 
 ** Single variant, gene mapping analysis
 
