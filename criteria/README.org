@@ -1,0 +1,53 @@
+* Inclusion criteria
+
+- The phenotype is solely or mainly based on clinical diagnosis of AD
+  (e.g., AD case/control status, age-at-onset of AD, or AD liability
+  score). In addition to clinical diagnosis of AD, the phenotype can
+  include other diagnostic measurements (e.g., neuropathological
+  assessment or disease biomarkers).
+
+- The study is a genome-wide association study of single variants or aggregations thereof.
+
+- The article is published after 2015-01-01.
+
+- The study is found in a search of the GWAS catalog or it is an ADSP paper in PubMed.
+
+- The analysis includes at least 1,000 subjects.
+
+* Exclusion criteria
+
+- The phenotype is a specific non-AD dementias or an endophenotype.
+
+- The phenotype is solely based on neuropathological or biomarker outcomes.
+
+- The article is a review.
+
+- The analysis is performed using a novel method.
+
+- The analysis is stratified (e.g., by sex or APOE status).
+
+* Tier assignment criteria
+
+** Single variant, locus association analysis
+
+*** Tier 1
+
+**** Quality of analysis
+
+- Are counfounding factors accounted for? For example, population structure, age, sex, race and ethnicity? *Yes*, No, Unable to eval
+
+**** Strength of association
+
+- pval of association < (0.05/# of tests)
+
+**** Robustness of association
+
+*** Tier 2
+
+- pval of association < (1/# of tests)
+
+** Single variant, gene mapping analysis
+
+** Aggregate variant, locus association analysis
+
+** Aggregate variant, gene mapping analysis
