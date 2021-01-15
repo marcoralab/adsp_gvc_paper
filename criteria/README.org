@@ -35,6 +35,56 @@
 - Is association robust?
 - Is association consistent?
 
+#+begin_src dot :tangle decision_tree.dot :file decision_tree.png
+  digraph graphname{
+      Acceptable [label="Is study acceptable?"]
+      Significant [label="Is association significant?"]
+      Appropriate_gw [label="Is analysis robust?"]
+      Appropriate_sg [label="Is analysis robust?"]
+      Consistent_gw [label="Is association consistent?"]
+      // Consistent_sg [label="Is association consistent?"]
+      Robust_Appropriate_gw [label="Is association robust?"]
+      Robust_Appropriate_sg [label="Is association robust?"]
+      Robust_NotAppropriate_gw [label="Is association robust?"]
+      Robust_NotAppropriate_sg [label="Is association robust?"]
+
+      Exclude [label="Exclude"]
+      Unspecified [label="Unspecified"]
+      Tier1 [label="Tier1"]
+      Tier2 [label="Tier2"]
+      Tier3 [label="Tier3"]
+      Tier4 [label="Tier4"]
+
+      Acceptable->Significant [label="YES", fontcolor=darkgreen]
+      Acceptable->Exclude [label="NO", fontcolor=red]
+
+      Significant->Appropriate_gw [label="pval < 0.05/N"]
+      Significant->Appropriate_sg [label="pval < 1/N"]
+      Significant->Exclude [label="pval >= 1/N"]
+
+      Appropriate_gw->Robust_Appropriate_gw [label="YES", fontcolor=darkgreen]
+      Appropriate_gw->Robust_NotAppropriate_gw [label="NO", fontcolor=red]
+
+      Appropriate_sg->Robust_Appropriate_sg [label="YES", fontcolor=darkgreen]
+      Appropriate_sg->Robust_NotAppropriate_sg [label="NO", fontcolor=red]
+
+      Robust_Appropriate_gw->Tier1 [label="YES", fontcolor=darkgreen]
+      Robust_Appropriate_gw->Unspecified [label="NO", fontcolor=red]
+
+      Robust_NotAppropriate_gw->Unspecified [label="YES", fontcolor=darkgreen]
+      Robust_NotAppropriate_gw->Unspecified [label="NO", fontcolor=red]
+
+      Robust_Appropriate_sg->Tier2 [label="YES", fontcolor=darkgreen]
+      Robust_Appropriate_sg->Tier3 [label="NO", fontcolor=red]
+
+      Robust_NotAppropriate_sg->Tier3 [label="YES", fontcolor=darkgreen]
+      Robust_NotAppropriate_sg->Tier4 [label="NO", fontcolor=red]
+  }
+#+end_src
+
+#+RESULTS:
+[[file:decision_tree.png]]
+
 ** Single variant, gene mapping analysis
 
 ** Aggregate variant, locus association analysis
