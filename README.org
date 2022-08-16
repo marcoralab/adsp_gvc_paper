@@ -153,3 +153,104 @@
 
   pubmed_xml %>% write(str_interp("${OUTPUT}/pubmed.AD_WEGS_GWAS.publications.xml"))
 #+end_src
+
+* From GWAS catalog and PubMed queries to XML for input into Covance screen <2022-08-16>
+
+#+begin_src R
+  library(tidyverse)
+  library(magrittr)
+  library(lubridate)
+  library(easyPubMed)
+
+  OUTPUT="output/2022-08-16"
+
+  EFO="MONDO_0004975" # MONDO_0004975 has replaced the previously used EFO_0000249
+
+  t = gwasrapidd::get_traits(efo_id = EFO)
+ 
+  save(t, file=str_interp("${OUTPUT}/gwas_catalog.${EFO}.traits.RData"))
+ 
+  ###
+ 
+  # s = gwasrapidd::get_studies(efo_id = t@traits$efo_id)
+
+  # studies for "Alzheimer disease" trait [MONDO_0004975] (incl. child trait data for "late-onset Alzheimers disease" [EFO_1001870])
+  # manually downloaded from GWAS Catalog website on 2022-08-16 due to error in commented code above!
+
+  s = read_csv("${OUTPUT}/efotraits_MONDO_0004975-studies-2022-08-16.csv")
+
+  s
+
+  s = gwasrapidd::get_studies(study_id = s$`Study accession`)
+
+  s
+
+  save(s, file=str_interp("${OUTPUT}/gwas_catalog.${EFO}.studies.RData"))
+
+  ###
+
+  p = s@publications
+ 
+  p
+
+  p %<>% filter(publication_date >= as_date("2015-01-01"))
+
+  p
+
+  p %>% nrow
+
+  p %>% distinct(pubmed_id) %>% nrow
+
+  p %>% write_csv(str_interp("${OUTPUT}/gwas_catalog.${EFO}.studies.publications.since_2015.csv"))
+
+  ###
+
+  a = gwasrapidd::get_associations(study_id = s@studies$study_id)
+
+  a
+
+  save(a, file=str_interp("${OUTPUT}/gwas_catalog.${EFO}.associations.RData"))
+
+  ###
+
+  v = gwasrapidd::get_variants(study_id = s@studies$study_id)
+
+  v
+
+  save(v, file=str_interp("${OUTPUT}/gwas_catalog.${EFO}.variants.RData"))
+
+  ###
+
+  pubmed_ids = p$pubmed_id %>% unique
+
+  pubmed_ids
+
+  pubmed_qry = str_c(str_c(pubmed_ids, " [PMID]"), collapse = " OR ")
+
+  pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
+
+  pubmed_xml %>% write(str_interp("${OUTPUT}/gwas_catalog.${EFO}.studies.publications.since_2015.xml"))
+
+  ###
+
+  pubmed_qry = "\"Alzheimer's Disease Sequencing Project\" [CN]"
+
+  as.character(get_pubmed_ids(pubmed_qry)$IdList) %notin% pubmed_ids # none of the ADSP papers is included in the GWAS Catalog!
+
+  pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
+
+  pubmed_xml %>% write(str_interp("${OUTPUT}/pubmed.ADSP_CN.publications.xml"))
+
+  ###
+
+  pubmed_qry = '("Alzheimer disease" OR "Alzheimer\'s disease") AND (whole-exome OR whole-genome) AND (genome-wide-association-study OR GWAS) NOT Review[PT] AND English[LA] AND 2010/01/01[EDAT]:2022/08/16[EDAT]'
+
+  as.character(get_pubmed_ids(pubmed_qry)$IdList) %notin% pubmed_ids
+
+  pubmed_xml = fetch_pubmed_data(get_pubmed_ids(pubmed_qry), format = "xml")
+
+  pubmed_xml %>% write(str_interp("${OUTPUT}/pubmed.AD_WEGS_GWAS.publications.xml"))
+#+end_src
+
+
+
